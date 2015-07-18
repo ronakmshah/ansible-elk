@@ -1,0 +1,6 @@
+---
+elk_common_packages:
+    - python-apt
+    - python-pip
+    - git-core
+

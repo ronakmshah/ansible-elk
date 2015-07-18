@@ -1,0 +1,21 @@
+---
+- name: ES apt repo
+  apt_repository:
+    repo="deb http://packages.elasticsearch.org/elasticsearch/1.6/debian stable main"
+    update_cache=yes
+  sudo: yes
+
+- name: Install ES apt packages
+  apt: pkg=elasticsearch update_cache=yes state=latest
+  sudo: yes
+  notify: Restart elasticsearch
+
+- name: ES config file
+  template:
+    src=elasticsearch.yml.j2
+    dest=/etc/elasticsearch/elasticsearch.yml
+    owner=root group=root mode=644
+  sudo: yes
+  notify: Restart elasticsearch
+
+

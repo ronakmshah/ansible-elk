@@ -1,0 +1,7 @@
+---
+# Playbook to install ELK stack on a server
+- name: ELK stack 
+  hosts: elk-server
+  roles:
+    - elk-server
+ 

@@ -1,0 +1,6 @@
+---
+- name: Copy SSL certificate
+  copy: src=/tmp/logstash-forwarder.crt dest=/tmp
+
+- name: Install logstash forwarder
+  include: logstash_forwarder.yml

@@ -1,0 +1,31 @@
+---
+- name: Logstash forwarder apt repo
+  apt_repository:
+    repo="deb http://packages.elasticsearch.org/logstashforwarder/debian stable main"
+    update_cache=yes
+  sudo: yes
+
+- name: Add GPG key
+  apt_key: url=http://packages.elasticsearch.org/GPG-KEY-elasticsearch state=present
+  sudo: yes
+ 
+- name: Install Logstash forwarder apt packages
+  apt: pkg=logstash-forwarder update_cache=yes state=latest
+  sudo: yes
+
+- name: Copy SSL Certificate (Create directory)
+  command: mkdir -p /etc/pki/tls/certs
+  sudo: yes
+
+- name: Copy SSL Certificate
+  command: cp /tmp/logstash-forwarder.crt /etc/pki/tls/certs/
+  sudo: yes
+
+- name: Logstash config file
+  template:
+    src=forwarder.yml.j2
+    dest=/etc/logstash-forwarder.conf
+    owner=root group=root mode=644
+  sudo: yes
+  notify: Restart logstash_forwarder
+

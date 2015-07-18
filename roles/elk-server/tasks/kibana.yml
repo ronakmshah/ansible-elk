@@ -1,0 +1,53 @@
+---
+- name: Kibana download
+  get_url:
+    dest=~/
+    url=https://download.elastic.co/kibana/kibana/kibana-4.1.1-linux-x64.tar.gz
+  sudo: yes
+  register: new_archive_downloaded
+
+- name: Kibana unarchive
+  unarchive:
+    src=~/kibana-4.1.1-linux-x64.tar.gz
+    dest=~/ copy=no
+  sudo: yes
+  when: new_archive_downloaded|changed
+
+- name: Kibana copy file
+  command: creates="/opt/kibana" mv ~/kibana-4.1.1-linux-x64/ /opt/kibana/
+  sudo: yes
+
+- name: Kibana config file change
+  replace:
+    dest=/opt/kibana/config/kibana.yml
+    regexp="^(host{{':'}} \"0.0.0.0\")" 
+    replace="host{{':'}} \"localhost\""
+  sudo: yes
+
+- name: Kibana init script
+  get_url:
+    dest=/etc/init.d
+    url=https://gist.githubusercontent.com/thisismitch/8b15ac909aed214ad04a/raw/bce61d85643c2dcdfbc2728c55a41dab444dca20/kibana4
+  sudo: yes
+
+- name: Kibana service enable
+  command:
+     chmod +x /etc/init.d/kibana4
+  sudo: yes
+  notify: Restart kibana
+
+- name: Install python-passlib for htpassword
+  pip: name=passlib
+  sudo: yes
+ 
+- name: Generate kibana htpassword
+  htpasswd: path=/etc/nginx/htpasswd.users name=kibanaadmin password=kibana
+  sudo: yes
+
+- name: Change /etc/nginx/sites-available/default file
+  template:
+    src=nginx_sa_default.yml.j2
+    dest=/etc/nginx/sites-available/default
+    owner=root group=root mode=644
+  sudo: yes
+  notify: Restart kibana

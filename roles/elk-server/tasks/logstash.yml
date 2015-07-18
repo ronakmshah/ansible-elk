@@ -1,0 +1,45 @@
+---
+- name: logstash apt repo
+  apt_repository:
+    repo="deb http://packages.elasticsearch.org/logstash/1.5/debian stable main"
+    update_cache=yes
+  sudo: yes
+
+- name: Install logstash apt packages
+  apt: pkg=logstash update_cache=yes state=latest
+  sudo: yes
+  notify: Restart elasticsearch
+
+- name: Generate SSL certificate (Make tls directory)
+  command: mkdir -p {{ item }} 
+  with_items:
+    - /etc/pki/tls/certs
+    - /etc/pki/tls/private
+  sudo: yes
+
+- name: Generate SSL certificate (Change openssl config)
+  lineinfile:
+    dest=/etc/ssl/openssl.cnf
+    insertafter="^(\[ v3_ca \])"
+    line="subjectAltName = IP{{':'}} {{ ansible_eth1.ipv4.address }}"
+    state=present
+  sudo: yes
+
+- name: Generate SSL certificate
+  command: openssl req -config /etc/ssl/openssl.cnf -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout private/logstash-forwarder.key -out certs/logstash-forwarder.crt
+  args:
+    chdir: /etc/pki/tls
+  sudo: yes
+
+- name: Copy SSL cert to local machine
+  fetch: src=/etc/pki/tls/certs/logstash-forwarder.crt dest=/tmp/ flat=yes
+  sudo: yes
+
+- name: ES config file
+  template:
+    src=logstash_io.yml.j2
+    dest=/etc/logstash/conf.d/logstash_io..yml
+    owner=root group=root mode=644
+  sudo: yes
+  notify: Restart logstash
+

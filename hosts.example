@@ -1,0 +1,5 @@
+[elk-server]
+localhost
+
+[elk-compute]
+192.168.1.2
