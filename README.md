@@ -49,10 +49,26 @@ There would be one or more elk-compute/forwarder hosts where logstash-forwarder 
 After that one can verify connection to all the hosts by running:
 ansible all -m ping [-u <user>]
 
-5. Install ELK on a host
+5. ELK Server Name and IP
+Modify /roles/elk-server/defaults/main.yml
+to write correct elk_server name and ip.
+
+[Optional] You can also define a port where logstash server will be serving all the forwarders.
+Default value is chosen to be 5000
+
+6. Install ELK on a host
 ansible-playbook -i hosts elk_server.yml
 
-6. Install logstash forwarder on compute/forwarder node
+7. ELK Forwarder configuration
+Modify roles/ovs-logstash-forwarder/defaults/main.yml
+- Write correct elk_server name and port to connect.
+  Default for port is 5000. This is the port that logstash server running on elk server 
+  can be connected on. For simplicity I have kept it under the same variable. 
+
+- Creaete a list of logstash_forwarder_files.
+  Add path and type for each file that you wish to collect log of.
+
+8. Install logstash forwarder on compute/forwarder node
 ansible-playbook -i hosts elk_compute.yml
 
 

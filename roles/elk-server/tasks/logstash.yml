@@ -21,7 +21,7 @@
   lineinfile:
     dest=/etc/ssl/openssl.cnf
     insertafter="^(\[ v3_ca \])"
-    line="subjectAltName = IP{{':'}} {{ ansible_eth1.ipv4.address }}"
+    line="subjectAltName = IP{{':'}} {{ elk_server.ip }}"
     state=present
   sudo: yes
 

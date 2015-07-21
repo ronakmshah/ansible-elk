@@ -1,0 +1,8 @@
+---
+elk_server:
+  name: localhost
+  ip: localhost
+
+logstash:
+  port: 5000
+

@@ -1,22 +1,16 @@
 {
   "network": {
-    "servers": [ "{{ elk_server.ip }}:5000" ],
+    "servers": [ "{{ elk_server.ip }}:{{ elk_server.port }}" ],
     "ssl ca": "/etc/pki/tls/certs/logstash-forwarder.crt",
     "timeout": 15
   },
 
   "files": [
-    {
-      "paths": [
-        "/var/log/openvswitch/ovs-vswitchd.log"
-      ],
-      "fields": { "type": "ovs-vswitchd" }
-    },
-    {
-      "paths": [
-        "/var/log/openvswitch/vm-monitor.log"
-      ],
-      "fields": { "type": "vm-monitor" }
-    }
+{% for item in logstash_forwarder_files %}
+    { 
+      "paths": [ "{{ item.path }}" ],
+      "fields": { "type": "{{ item.type }}" }
+    }{% if not loop.last %},{% endif %} 
+{% endfor %}
   ]
 }
