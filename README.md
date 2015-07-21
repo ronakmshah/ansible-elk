@@ -5,7 +5,7 @@ stack on a distributed systems and collect specifically OVS related logs, presen
 dashboard and potentially add watcher (alerting plugin) to the stack to the mix.
 
 <h2> Use-cases </h2>
-1. Openstack based privated cloud powered by any OVS based networking stack. Single point to gather
+1. Openstack based private cloud powered by any OVS based networking stack. Single point to gather
 all the WARN, DEBUG and ERROR logs, index them and present them rather than going to each compute node to 
 read them in a text file.
 
@@ -36,39 +36,34 @@ This is required for ansible. Please read below for more info:
 http://docs.ansible.com/intro_getting_started.html
 
 3. Git Checkout this code
-git clone https://github.com/ronakmshah/ansible-elk.git
+git clone https://github.com/ronakmshah/ansible-elk.git<br/>
 cd ansible-elk
 
-4. Write hosts(inventory) file
-Read hosts.example for example
-cp hosts.example hosts and than make a change into hosts file as required.
+4. Write hosts(inventory) file<br/>Read hosts.example for example<br/>cp hosts.example hosts and than make a change into hosts file as required. <br/>
+[NOTE:There would be one elk-server host where elasticsearch, kibana and logstash server will need to be installed.
+<br/>Tere would be one or more elk-compute/forwarder hosts where logstash-forwarder will be installed.]<br/>
 
-There would be one elk-server host where elasticsearch, kibana and logstash server will need to be installed.
-There would be one or more elk-compute/forwarder hosts where logstash-forwarder will be installed.
-
-After that one can verify connection to all the hosts by running:
+5. After that one can verify connection to all the hosts by running:
 ansible all -m ping [-u <user>]
 
-5. ELK Server Name and IP
-Modify /roles/elk-server/defaults/main.yml
-to write correct elk_server name and ip.
+6. ELK Server Name and IP
+Modify /roles/elk-server/defaults/main.yml <br/>
+to write correct elk_server name and ip.<br/>
+[Optional] You can also define a port where logstash server will be serving all the forwarders. <br/>
+Default value is chosen to be 5000<br/>
 
-[Optional] You can also define a port where logstash server will be serving all the forwarders.
-Default value is chosen to be 5000
-
-6. Install ELK on a host
+7. Install ELK on a host<br/>
 ansible-playbook -i hosts elk_server.yml
 
-7. ELK Forwarder configuration
-Modify roles/ovs-logstash-forwarder/defaults/main.yml
-- Write correct elk_server name and port to connect.
-  Default for port is 5000. This is the port that logstash server running on elk server 
-  can be connected on. For simplicity I have kept it under the same variable. 
+8. ELK Forwarder configuration<br/>
+  a) Modify roles/ovs-logstash-forwarder/defaults/main.yml<br/>
+   Write correct elk_server name and port to connect.<br/>
+   [Note:] Default for port is 5000. This is the port that logstash server running on elk server can be connected on.            For simplicity I have kept it under the same variable. 
+   <br/><br/>
+  b) Create a list of logstash_forwarder_files.<br/>
+     Add path and type for each file that you wish to collect log of.<br/>
 
-- Creaete a list of logstash_forwarder_files.
-  Add path and type for each file that you wish to collect log of.
-
-8. Install logstash forwarder on compute/forwarder node
+9. Install logstash forwarder on compute/forwarder node<br/>
 ansible-playbook -i hosts elk_compute.yml
 
 
