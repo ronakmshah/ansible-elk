@@ -4,6 +4,11 @@ This is my attempt to create an ansible playbook to install ELK (Elasticsearch-L
 stack on a distributed systems and collect specifically OVS related logs, present it in a Kibana
 dashboard and potentially add watcher (alerting plugin) to the stack to the mix.
 
+<h2> Version getting installed </h2>
+1.6 version of Elasticsearch <br>
+1.5 version of Logstash <br>
+4.1.1 version of Kibana
+
 <h2> Use-cases </h2>
 1. Openstack based private cloud powered by any OVS based networking stack. Single point to gather
 all the WARN, DEBUG and ERROR logs, index them and present them rather than going to each compute node to 
