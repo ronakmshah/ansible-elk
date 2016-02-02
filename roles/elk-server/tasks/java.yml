@@ -1,23 +1,16 @@
----
-- name: WenUpd8 apt repo
-  apt_repository:
-    repo='ppa:webupd8team/java'
-    update_cache=yes
-  sudo: yes
 
-- name: Check Oracle license
-  shell:
-    /usr/bin/debconf-show oracle-java8-installer |awk '/accepted-oracle-license/{print $NF}'
-  sudo: yes
-  changed_when: False
-  register: webupd8team
+- name: Download Java
+  command: "wget -q -O {{java_archive}} --no-check-certificate --no-cookies --header 'Cookie: oraclelicense=accept-securebackup-cookie' {{java_download_url}} creates={{java_archive}}"
 
-- name: Accept Oracle license
-  shell:
-    echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | /usr/bin/debconf-set-selections
-  sudo: yes
-  when: webupd8team.stdout != 'true'
+- name: Unpack archive
+  command: "tar -zxf {{java_archive}} -C {{java_download_folder}} creates={{java_name}}"
 
-- name: Oracle Java apt install
-  apt: pkg=oracle-java8-installer update_cache=yes state=present
-  sudo: yes
+- name: Fix ownership
+  file: state=directory path={{java_name}} owner=root group=root recurse=yes
+
+- name: Make Java available for system
+  command: 'alternatives --install "/usr/bin/java" "java" "{{java_name}}/bin/java" 2000'
+
+- name: Clean up
+  file: state=absent path={{java_archive}}
+

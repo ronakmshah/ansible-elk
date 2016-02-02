@@ -1,14 +1,11 @@
 ---
-- name: ES apt repo
-  apt_repository:
-    repo="deb http://packages.elastic.co/elasticsearch/2.x/debian stable main"
-    update_cache=yes
-  sudo: yes
+- name: Download Elasticsearch
+  get_url: url=https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/rpm/elasticsearch/2.1.1/elasticsearch-2.1.1.rpm dest=/tmp
 
-- name: Install ES apt packages
-  apt: pkg=elasticsearch update_cache=yes state=latest
+- name: Install ES rpm package
+  yum:
+    name: /tmp/elasticsearch-2.1.1.rpm
   sudo: yes
-  notify: Restart elasticsearch
 
 - name: ES config file
   template:
