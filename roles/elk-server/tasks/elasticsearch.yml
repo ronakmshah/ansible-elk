@@ -1,7 +1,7 @@
 ---
 - name: ES apt repo
   apt_repository:
-    repo="deb http://packages.elasticsearch.org/elasticsearch/1.6/debian stable main"
+    repo="deb http://packages.elastic.co/elasticsearch/2.x/debian stable main"
     update_cache=yes
   sudo: yes
 

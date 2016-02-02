@@ -1,9 +1,0 @@
----
-# Ansible playbook for ELK forwarding component installation
-# with enabling ovs log files into ELK.
-- name: ELK Compute playbook to install and configure logstash forwarder
-  hosts: elk-compute
-  roles:
-    - ovs-logstash-forwarder
-     
-

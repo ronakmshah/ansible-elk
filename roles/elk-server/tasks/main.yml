@@ -16,12 +16,3 @@
 - name: Install Elasticsearch
   include: elasticsearch.yml
 
-- name: Install Nginx
-  include: nginx.yml
-
-- name: Install Kibana
-  include: kibana.yml
-
-- name: Install Logstash Server
-  include: logstash.yml
-

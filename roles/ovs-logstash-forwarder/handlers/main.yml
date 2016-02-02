@@ -1,7 +1,0 @@
----
-- name: Restart logstash_forwarder
-  service:
-    name=logstash-forwarder
-    enabled=yes
-    state=restarted
-  sudo: yes

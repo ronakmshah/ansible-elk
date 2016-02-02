@@ -1,8 +1,0 @@
----
-- name: Install Nginx
-  apt: pkg={{item}} state=latest
-  with_items:
-    - nginx
-    - apache2-utils
-  sudo: yes
-
